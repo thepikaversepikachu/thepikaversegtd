@@ -22,7 +22,7 @@
         .active { display: flex !important; animation: fadeIn 0.8s forwards; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* --- PAGE 1: POKEBALL SPLIT --- */
+        /* --- POKEBALL SPLIT --- */
         .pokeball-wrapper { position: relative; width: 180px; height: 180px; cursor: pointer; }
         .ball-part { position: absolute; width: 100%; height: 50%; left: 0; border: 6px solid #111; transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1); }
         .top-half { top: 0; background: #ff1c1c; border-radius: 90px 90px 0 0; }
@@ -33,21 +33,11 @@
         .flash { position: fixed; inset: 0; background: white; opacity: 0; pointer-events: none; z-index: 100; }
         @keyframes flash-anim { 0% { opacity: 0; } 50% { opacity: 1; } 100% { opacity: 0; } }
 
-        /* --- THUNDER UI --- */
-        .thunder-btn {
-            background: rgba(255, 234, 0, 0.1); border: 2px solid var(--pika-yellow); color: var(--pika-yellow);
-            padding: 15px 40px; border-radius: 50px; font-weight: 900; transition: 0.4s;
-            box-shadow: 0 0 15px var(--pika-yellow);
-        }
-        .thunder-btn:not(:disabled):hover { background: var(--pika-yellow); color: black; box-shadow: 0 0 40px var(--pika-yellow); }
-        
-        /* Disabled Button Style */
-        .thunder-btn:disabled { opacity: 0.3; cursor: not-allowed; border-color: #555; color: #555; box-shadow: none; }
-
+        /* --- TASK STYLING --- */
         .task-box { background: rgba(0,0,0,0.6); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; transition: 0.3s; cursor: pointer; }
         .task-box.completed { border-color: #00FF00; background: rgba(0, 255, 0, 0.1); }
-        .task-box:hover { transform: translateX(10px); }
 
+        /* --- PAGE 4: PREMIUM SUBMISSION CARD --- */
         .submit-card { 
             background: linear-gradient(135deg, rgba(20,20,20,0.95), rgba(0,0,0,0.9));
             border: 2px solid #333; border-radius: 40px; box-shadow: 0 0 50px rgba(255,234,0,0.1);
@@ -55,9 +45,24 @@
         .thunderball-submit {
             background: radial-gradient(circle at center, #FFEA00, #FFA500);
             border: none; color: black; font-weight: 900; border-radius: 50px;
-            box-shadow: 0 0 30px #FFEA00; transition: 0.5s;
+            box-shadow: 0 0 30px #FFEA00; transition: 0.5s; cursor: pointer;
         }
-        .thunderball-submit:disabled { background: #333; color: #666; box-shadow: none; cursor: not-allowed; }
+        .thunderball-submit:hover { transform: scale(1.02); box-shadow: 0 0 60px #FFEA00; }
+
+        /* Updated Larger Input Boxes */
+        input { 
+            background: rgba(255, 255, 255, 0.05); 
+            border: 2px solid rgba(255, 255, 255, 0.1); 
+            padding: 18px 24px; 
+            border-radius: 16px; 
+            color: white; 
+            width: 100%; 
+            outline: none; 
+            font-size: 16px; 
+            transition: 0.3s;
+        }
+        input:focus { border-color: var(--pika-yellow); background: rgba(255, 255, 0, 0.05); }
+        input::placeholder { color: rgba(255, 255, 255, 0.4); }
     </style>
 </head>
 <body>
@@ -76,11 +81,9 @@
 
     <section id="page2" class="page">
         <div class="max-w-xl text-center px-6 bg-black/40 p-10 rounded-[50px] backdrop-blur-md border border-white/5">
-            <h1 class="header-font text-5xl text-[var(--pika-yellow)] mb-6">THE PIKA VERSE GTD</h1>
-            <p class="text-gray-300 text-lg leading-relaxed mb-10">
-                You have unlocked the gateway. The Pika Verse is calling for its champions. Complete the electrical trials and secure your spot in the legend.
-            </p>
-            <button onclick="nextPage(3)" class="thunder-btn header-font">⚡ ENTER TRIALS</button>
+            <h1 class="header-font text-4xl text-[var(--pika-yellow)] mb-6 uppercase">THE PIKA VERSE GTD</h1>
+            <p class="text-gray-300 text-lg mb-10">You have unlocked the gateway. The Pika Verse is calling for its champions. Complete the electrical trials and secure your spot in the legend.</p>
+            <button onclick="nextPage(3)" class="bg-transparent border-2 border-yellow-400 text-yellow-400 px-10 py-4 rounded-full font-bold header-font hover:bg-yellow-400 hover:text-black transition">⚡ ENTER TRIALS</button>
         </div>
     </section>
 
@@ -116,49 +119,53 @@
 
     <section id="page4" class="page">
         <div class="w-full max-w-lg submit-card p-10 mx-6 relative overflow-hidden">
-            <img src="https://assets.pokemon.com/assets/cms2/img/pokedex/full/025.png" class="absolute -bottom-10 -right-10 w-40 opacity-20 pointer-events-none">
-            <h2 class="header-font text-2xl mb-8 text-center text-yellow-400">QUEST VERIFICATION</h2>
+            <img src="https://assets.pokemon.com/assets/cms2/img/pokedex/full/025.png" class="absolute -bottom-10 -right-10 w-40 opacity-20 pointer-events-none" alt="Pika">
             
-            <form id="pikaFinalForm" class="space-y-5">
-                <input type="text" name="username" id="form-user" placeholder="𝕏 Handle (@username)" class="w-full bg-white/5 border border-white/20 p-4 rounded-2xl outline-none focus:border-yellow-400" required>
-                <div class="flex items-center gap-4 bg-white/5 p-4 rounded-2xl border border-white/10">
+            <h2 class="header-font text-2xl mb-8 text-center text-yellow-400 uppercase">Verification</h2>
+            
+            <form id="pikaFinalForm" class="space-y-6">
+                <input type="text" name="username" id="form-user" placeholder="𝕏 Handle (@username)" required>
+                
+                <div class="flex items-center gap-4 bg-white/5 p-4 rounded-2xl border-2 border-white/10">
                     <input type="checkbox" id="form-check" required class="w-6 h-6 accent-yellow-400">
-                    <label class="text-xs text-gray-400">I confirm that I completed all tasks.</label>
+                    <label class="text-sm text-gray-400 italic">Confirm all tasks completed.</label>
                 </div>
-                <input type="text" name="meme_link" id="form-meme" placeholder="Meme Post Link" class="w-full bg-white/5 border border-white/20 p-4 rounded-2xl outline-none focus:border-yellow-400" required>
-                <input type="text" name="wallet" id="form-wallet" placeholder="EVM Wallet Address" class="w-full bg-white/5 border border-white/20 p-4 rounded-2xl outline-none focus:border-yellow-400 font-mono text-xs" required>
+
+                <input type="text" name="meme_link" placeholder="Meme Post Link" required>
+                <input type="text" name="wallet" placeholder="EVM Wallet Address" required>
 
                 <button type="submit" id="submit-btn" class="w-full thunderball-submit py-5 header-font text-sm uppercase">
                     ⚡ CAST THUNDERBOLT
                 </button>
             </form>
+        </div>
+    </section>
 
-            <div id="referral-zone" class="mt-10 hidden text-center">
-                <div class="p-4 bg-yellow-400/10 border border-dashed border-yellow-400 rounded-3xl">
-                    <p id="final-link" class="text-xs font-mono text-gray-300 mb-3"></p>
-                    <button onclick="copyRef()" class="bg-yellow-400 text-black px-6 py-2 rounded-full font-bold text-xs">COPY LINK</button>
-                </div>
+    <section id="page5" class="page">
+        <div class="w-full max-w-xl text-center bg-black/60 p-10 rounded-[50px] backdrop-blur-xl border-2 border-yellow-400">
+            <img src="https://assets.pokemon.com/assets/cms2/img/pokedex/full/025.png" class="w-32 mx-auto mb-6 drop-shadow-[0_0_20px_#FFEA00]">
+            <h2 class="header-font text-3xl text-yellow-400 mb-4 uppercase">Submission Success!</h2>
+            <p class="text-gray-300 mb-8">Your journey has been recorded. To increase your <span class="text-white font-bold">GTD chances</span>, share your link below!</p>
+            
+            <div class="p-6 bg-yellow-400/10 border border-dashed border-yellow-500 rounded-3xl">
+                <p id="final-link" class="text-xs font-mono text-gray-400 bg-black/40 p-3 rounded-xl mb-4 truncate"></p>
+                <button onclick="copyRef()" class="bg-yellow-400 text-black px-8 py-3 rounded-full font-black text-xs uppercase hover:scale-105 transition">Copy My Link</button>
             </div>
+
+            <p class="mt-8 text-xs text-blue-400 font-bold uppercase tracking-widest">
+                ⚡ More Referrals = Higher GTD Probability ⚡
+            </p>
         </div>
     </section>
 
     <script>
-        let tasksCompleted = [false, false, false, false, false];
-
-        function completeTask(num, url) {
+        let tasks = [false, false, false, false, false];
+        function completeTask(n, url) {
             window.open(url, '_blank');
-            tasksCompleted[num-1] = true;
-            document.getElementById(`t${num}`).classList.add('completed');
-            document.getElementById(`check${num}`).innerText = '✅';
-            checkAllTasks();
-        }
-
-        function checkAllTasks() {
-            if (tasksCompleted.every(t => t === true)) {
-                document.getElementById('next-to-final').disabled = false;
-                document.getElementById('task-msg').innerText = "ALL TRIALS COMPLETE! PROCEED.";
-                document.getElementById('task-msg').classList.replace('text-red-500', 'text-green-500');
-            }
+            tasks[n-1] = true;
+            document.getElementById(`t${n}`).classList.add('completed');
+            document.getElementById(`check${n}`).innerText = '✅';
+            if (tasks.every(t => t)) document.getElementById('next-to-final').disabled = false;
         }
 
         function startSequence() {
@@ -166,7 +173,7 @@
             document.getElementById('bottom').classList.add('split-bottom');
             document.getElementById('center-ball').style.opacity = '0';
             document.getElementById('flash-layer').style.animation = 'flash-anim 1s forwards';
-            setTimeout(() => { nextPage(2); }, 800);
+            setTimeout(() => nextPage(2), 800);
         }
 
         function nextPage(n) {
@@ -189,8 +196,7 @@
             fetch(scriptURL, { method: 'POST', body: new FormData(form)})
                 .finally(() => {
                     document.getElementById('final-link').innerText = refLink;
-                    document.getElementById('referral-zone').classList.remove('hidden');
-                    btn.innerText = "SENT TO VERSE";
+                    nextPage(5);
                 });
         });
 
