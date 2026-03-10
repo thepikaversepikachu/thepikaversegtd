@@ -11,11 +11,10 @@
         body { background: #000; color: white; font-family: 'Outfit', sans-serif; overflow: hidden; }
         .header-font { font-family: 'Syncopate', sans-serif; }
 
-        /* Background Video/Image Layer */
         .bg-overlay {
             position: fixed; inset: 0; z-index: -1;
             background: linear-gradient(to bottom, rgba(0,0,0,0.8), rgba(0,0,0,0.9)),
-                        url('https://images.alphacoders.com/132/1321727.png'); /* Premium Pikachu Art */
+                        url('https://images.alphacoders.com/132/1321727.png');
             background-size: cover; background-position: center;
         }
 
@@ -24,7 +23,7 @@
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
         /* --- PAGE 1: POKEBALL SPLIT --- */
-        .pokeball-wrapper { position: relative; width: 180px; height: 180px; cursor: pointer; transition: 0.3s; }
+        .pokeball-wrapper { position: relative; width: 180px; height: 180px; cursor: pointer; }
         .ball-part { position: absolute; width: 100%; height: 50%; left: 0; border: 6px solid #111; transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1); }
         .top-half { top: 0; background: #ff1c1c; border-radius: 90px 90px 0 0; }
         .bottom-half { bottom: 0; background: white; border-radius: 0 0 90px 90px; }
@@ -40,12 +39,15 @@
             padding: 15px 40px; border-radius: 50px; font-weight: 900; transition: 0.4s;
             box-shadow: 0 0 15px var(--pika-yellow);
         }
-        .thunder-btn:hover { background: var(--pika-yellow); color: black; box-shadow: 0 0 40px var(--pika-yellow); }
+        .thunder-btn:not(:disabled):hover { background: var(--pika-yellow); color: black; box-shadow: 0 0 40px var(--pika-yellow); }
+        
+        /* Disabled Button Style */
+        .thunder-btn:disabled { opacity: 0.3; cursor: not-allowed; border-color: #555; color: #555; box-shadow: none; }
 
-        .task-box { background: rgba(0,0,0,0.6); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; transition: 0.3s; }
-        .task-box:hover { border-color: var(--pika-yellow); transform: translateX(10px); }
+        .task-box { background: rgba(0,0,0,0.6); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; transition: 0.3s; cursor: pointer; }
+        .task-box.completed { border-color: #00FF00; background: rgba(0, 255, 0, 0.1); }
+        .task-box:hover { transform: translateX(10px); }
 
-        /* --- PAGE 4: PREMIUM SUBMISSION --- */
         .submit-card { 
             background: linear-gradient(135deg, rgba(20,20,20,0.95), rgba(0,0,0,0.9));
             border: 2px solid #333; border-radius: 40px; box-shadow: 0 0 50px rgba(255,234,0,0.1);
@@ -55,7 +57,7 @@
             border: none; color: black; font-weight: 900; border-radius: 50px;
             box-shadow: 0 0 30px #FFEA00; transition: 0.5s;
         }
-        .thunderball-submit:hover { transform: scale(1.05) rotate(2deg); box-shadow: 0 0 60px #FFEA00; }
+        .thunderball-submit:disabled { background: #333; color: #666; box-shadow: none; cursor: not-allowed; }
     </style>
 </head>
 <body>
@@ -69,7 +71,7 @@
             <div id="center-ball" class="center-btn"></div>
             <div id="bottom" class="ball-part bottom-half"></div>
         </div>
-        <p class="header-font text-xs mt-10 tracking-[0.5em] text-yellow-400 animate-pulse">THE PIKA VERSE</p>
+        <p class="header-font text-xs mt-10 tracking-[0.5em] text-yellow-400 animate-pulse">TOUCH TO ENTER</p>
     </section>
 
     <section id="page2" class="page">
@@ -85,46 +87,45 @@
     <section id="page3" class="page">
         <h2 class="header-font text-3xl mb-8 text-white">ELECTRICAL <span class="text-yellow-400">TASKS</span></h2>
         <div class="w-full max-w-xl space-y-4 px-6">
-            <div onclick="window.open('https://x.com/thepikachuverse')" class="task-box p-5 flex items-center justify-between cursor-pointer">
+            <div id="t1" onclick="completeTask(1, 'https://x.com/thepikachuverse')" class="task-box p-5 flex items-center justify-between">
                 <span class="font-bold">Follow @thepikachuverse</span>
-                <span class="text-2xl">⚡</span>
+                <span id="check1" class="text-2xl">⚡</span>
             </div>
-            <div onclick="window.open('https://x.com/i/status/2031054504993632648')" class="task-box p-5 flex items-center justify-between cursor-pointer">
+            <div id="t2" onclick="completeTask(2, 'https://x.com/i/status/2031054504993632648')" class="task-box p-5 flex items-center justify-between">
                 <span class="font-bold">Like the Quest Tweet</span>
-                <span class="text-2xl">⚡</span>
+                <span id="check2" class="text-2xl">⚡</span>
             </div>
-            <div onclick="window.open('https://x.com/i/status/2031054504993632648')" class="task-box p-5 flex items-center justify-between cursor-pointer">
+            <div id="t3" onclick="completeTask(3, 'https://x.com/i/status/2031054504993632648')" class="task-box p-5 flex items-center justify-between">
                 <span class="font-bold">Repost the Quest Tweet</span>
-                <span class="text-2xl">⚡</span>
+                <span id="check3" class="text-2xl">⚡</span>
             </div>
-            <div onclick="window.open('https://x.com/i/status/2031054504993632648')" class="task-box p-5 flex items-center justify-between cursor-pointer">
+            <div id="t4" onclick="completeTask(4, 'https://x.com/i/status/2031054504993632648')" class="task-box p-5 flex items-center justify-between">
                 <span class="font-bold">Comment on the Tweet</span>
-                <span class="text-2xl">⚡</span>
+                <span id="check4" class="text-2xl">⚡</span>
             </div>
-            <div onclick="window.open('https://x.com/thepikachuverse')" class="task-box p-5 flex items-center justify-between cursor-pointer">
+            <div id="t5" onclick="completeTask(5, 'https://x.com/thepikachuverse')" class="task-box p-5 flex items-center justify-between">
                 <span class="font-bold">Share Meme & Tag Verse</span>
-                <span class="text-2xl">⚡</span>
+                <span id="check5" class="text-2xl">⚡</span>
             </div>
-            <button onclick="nextPage(4)" class="w-full py-4 mt-4 bg-white text-black font-black rounded-full uppercase italic">Verify Submission</button>
+            
+            <p id="task-msg" class="text-[10px] text-center text-red-500 font-bold uppercase tracking-widest mt-2">Complete all 5 tasks to proceed</p>
+            
+            <button id="next-to-final" onclick="nextPage(4)" disabled class="w-full py-4 mt-4 bg-white text-black font-black rounded-full uppercase italic disabled:opacity-20">Verify Submission</button>
         </div>
     </section>
 
     <section id="page4" class="page">
         <div class="w-full max-w-lg submit-card p-10 mx-6 relative overflow-hidden">
-            <img src="https://assets.pokemon.com/assets/cms2/img/pokedex/full/025.png" class="absolute -bottom-10 -right-10 w-40 opacity-20 pointer-events-none" alt="Pika">
-            
+            <img src="https://assets.pokemon.com/assets/cms2/img/pokedex/full/025.png" class="absolute -bottom-10 -right-10 w-40 opacity-20 pointer-events-none">
             <h2 class="header-font text-2xl mb-8 text-center text-yellow-400">QUEST VERIFICATION</h2>
             
             <form id="pikaFinalForm" class="space-y-5">
                 <input type="text" name="username" id="form-user" placeholder="𝕏 Handle (@username)" class="w-full bg-white/5 border border-white/20 p-4 rounded-2xl outline-none focus:border-yellow-400" required>
-                
                 <div class="flex items-center gap-4 bg-white/5 p-4 rounded-2xl border border-white/10">
-                    <input type="checkbox" name="confirmed" id="form-check" required class="w-6 h-6 accent-yellow-400">
-                    <label class="text-xs text-gray-400">I confirm that I Liked & Reposted all required tweets.</label>
+                    <input type="checkbox" id="form-check" required class="w-6 h-6 accent-yellow-400">
+                    <label class="text-xs text-gray-400">I confirm that I completed all tasks.</label>
                 </div>
-
                 <input type="text" name="meme_link" id="form-meme" placeholder="Meme Post Link" class="w-full bg-white/5 border border-white/20 p-4 rounded-2xl outline-none focus:border-yellow-400" required>
-                
                 <input type="text" name="wallet" id="form-wallet" placeholder="EVM Wallet Address" class="w-full bg-white/5 border border-white/20 p-4 rounded-2xl outline-none focus:border-yellow-400 font-mono text-xs" required>
 
                 <button type="submit" id="submit-btn" class="w-full thunderball-submit py-5 header-font text-sm uppercase">
@@ -132,10 +133,9 @@
                 </button>
             </form>
 
-            <div id="referral-zone" class="mt-10 hidden text-center animate-bounce-in">
+            <div id="referral-zone" class="mt-10 hidden text-center">
                 <div class="p-4 bg-yellow-400/10 border border-dashed border-yellow-400 rounded-3xl">
-                    <p class="text-[10px] uppercase font-black text-yellow-400 mb-2">Invite Others to Secure GTD</p>
-                    <p id="final-link" class="text-xs truncate font-mono text-gray-300 mb-3"></p>
+                    <p id="final-link" class="text-xs font-mono text-gray-300 mb-3"></p>
                     <button onclick="copyRef()" class="bg-yellow-400 text-black px-6 py-2 rounded-full font-bold text-xs">COPY LINK</button>
                 </div>
             </div>
@@ -143,23 +143,38 @@
     </section>
 
     <script>
+        let tasksCompleted = [false, false, false, false, false];
+
+        function completeTask(num, url) {
+            window.open(url, '_blank');
+            tasksCompleted[num-1] = true;
+            document.getElementById(`t${num}`).classList.add('completed');
+            document.getElementById(`check${num}`).innerText = '✅';
+            checkAllTasks();
+        }
+
+        function checkAllTasks() {
+            if (tasksCompleted.every(t => t === true)) {
+                document.getElementById('next-to-final').disabled = false;
+                document.getElementById('task-msg').innerText = "ALL TRIALS COMPLETE! PROCEED.";
+                document.getElementById('task-msg').classList.replace('text-red-500', 'text-green-500');
+            }
+        }
+
+        function startSequence() {
+            document.getElementById('top').classList.add('split-top');
+            document.getElementById('bottom').classList.add('split-bottom');
+            document.getElementById('center-ball').style.opacity = '0';
+            document.getElementById('flash-layer').style.animation = 'flash-anim 1s forwards';
+            setTimeout(() => { nextPage(2); }, 800);
+        }
+
         function nextPage(n) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById('page' + n).classList.add('active');
         }
 
-        function startSequence() {
-            const flash = document.getElementById('flash-layer');
-            document.getElementById('top').classList.add('split-top');
-            document.getElementById('bottom').classList.add('split-bottom');
-            document.getElementById('center-ball').style.opacity = '0';
-            
-            flash.style.animation = 'flash-anim 1s forwards';
-            setTimeout(() => { nextPage(2); }, 800);
-        }
-
-        // GOOGLE SHEETS INTEGRATION
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbw7ieLRoWQl4dd59ioqKZeqlPYRjbFSI97IaNO1eL9E0_5qBshj2rWdpSPLsaqSEP5Yxw/exec'; // REPLACE THIS
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbw7ieLRoWQl4dd59ioqKZeqlPYRjbFSI97IaNO1eL9E0_5qBshj2rWdpSPLsaqSEP5Yxw/exec'; 
         const form = document.getElementById('pikaFinalForm');
 
         form.addEventListener('submit', e => {
@@ -168,19 +183,11 @@
             btn.innerText = "TRANSMITTING...";
             btn.disabled = true;
 
-            // Generate Referral Link
             const user = document.getElementById('form-user').value.replace('@', '');
             const refLink = `https://thepikaverse.art/?ref=${user}`;
 
-            // Actual Data Send
             fetch(scriptURL, { method: 'POST', body: new FormData(form)})
-                .then(response => {
-                    document.getElementById('final-link').innerText = refLink;
-                    document.getElementById('referral-zone').classList.remove('hidden');
-                    btn.innerText = "SUCCESS!";
-                })
-                .catch(error => {
-                    // Fallback if URL is not set yet
+                .finally(() => {
                     document.getElementById('final-link').innerText = refLink;
                     document.getElementById('referral-zone').classList.remove('hidden');
                     btn.innerText = "SENT TO VERSE";
@@ -194,3 +201,4 @@
     </script>
 </body>
 </html>
+>
