@@ -3,54 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Elite Loyalty Scanner - The Pika Verse</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.umd.min.js"></script>
+    <title>Elite Scanner - The Pika Verse</title>
     <style>
-        :root { --bg: #0b0e14; --card: #151921; --accent: #f0b90b; --green: #238636; --border: #30363d; --text: #e6edf3; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); padding: 40px; margin: 0; }
-        .container { max-width: 900px; margin: auto; background: var(--card); padding: 35px; border-radius: 20px; border: 1px solid var(--border); box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
-        h1 { text-align: center; color: var(--accent); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 5px; }
-        p.subtitle { text-align: center; color: #8b949e; margin-bottom: 30px; }
-        textarea { width: 100%; height: 180px; background: #010409; color: #58a6ff; border: 1px solid var(--border); border-radius: 12px; padding: 15px; font-family: 'Courier New', monospace; font-size: 14px; outline: none; margin-bottom: 20px; transition: 0.3s; }
-        textarea:focus { border-color: var(--accent); }
-        .btn-group { display: flex; gap: 15px; }
-        button { flex: 1; padding: 18px; border-radius: 10px; border: none; font-weight: bold; font-size: 16px; cursor: pointer; transition: 0.3s; }
-        .btn-primary { background: var(--green); color: white; }
-        .btn-primary:hover { background: #2ea043; transform: translateY(-2px); }
-        .btn-secondary { background: #21262d; color: var(--text); border: 1px solid var(--border); }
-        .btn-secondary:hover { background: #30363d; }
-        #log { margin-top: 20px; text-align: center; color: var(--accent); font-weight: 500; font-size: 14px; }
-        table { width: 100%; margin-top: 30px; border-collapse: collapse; display: none; border-radius: 10px; overflow: hidden; }
-        th { background: #1f242c; color: var(--accent); padding: 15px; text-align: left; font-size: 12px; }
-        td { padding: 15px; border-bottom: 1px solid var(--border); font-size: 14px; background: #161b22; }
-        .gtd-row { background: rgba(35, 134, 54, 0.1) !important; border-left: 5px solid var(--green); }
-        .badge { padding: 6px 12px; border-radius: 30px; font-size: 11px; font-weight: 900; }
-        .badge-gtd { background: var(--green); color: white; }
-        .badge-wl { background: #484f58; color: #d1d5db; }
+        :root { --bg: #0d1117; --card: #161b22; --accent: #f0b90b; --success: #238636; --border: #30363d; --text: #c9d1d9; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); color: var(--text); padding: 40px; margin: 0; }
+        .container { max-width: 850px; margin: auto; background: var(--card); padding: 30px; border-radius: 12px; border: 1px solid var(--border); }
+        h2 { color: var(--accent); text-align: center; text-transform: uppercase; }
+        textarea { width: 100%; height: 150px; background: #010409; color: #58a6ff; border: 1px solid var(--border); border-radius: 8px; padding: 15px; box-sizing: border-box; font-family: monospace; margin-bottom: 20px; }
+        button { width: 100%; background: var(--success); color: white; border: none; padding: 16px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px; }
+        #status { margin-top: 15px; text-align: center; color: var(--accent); font-weight: bold; }
+        table { width: 100%; margin-top: 25px; border-collapse: collapse; display: none; }
+        th, td { border: 1px solid var(--border); padding: 12px; text-align: left; }
+        th { background: #21262d; color: var(--accent); }
+        .gtd { background: rgba(35, 134, 54, 0.2); font-weight: bold; color: #39d353; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>The Pika Verse</h1>
-    <p class="subtitle">Elite GTD Selection System (100+ TX & 50+ NFTs)</p>
+    <h2>THE PIKA VERSE</h2>
+    <p style="text-align: center; color: #8b949e;">Elite GTD Filter (100+ TX & 50+ NFTs)</p>
 
-    <textarea id="wallets" placeholder="Paste addresses from your Google Sheet here..."></textarea>
-    
-    <div class="btn-group">
-        <button class="btn-primary" onclick="startScan()">Analyze Wallets</button>
-        <button class="btn-secondary" onclick="exportData()">Download CSV</button>
-    </div>
-
-    <div id="log">Awaiting input...</div>
+    <textarea id="wallets" placeholder="Paste addresses from Google Sheet here..."></textarea>
+    <button onclick="runAnalysis()">Analyze Elite Status</button>
+    <div id="status">Ready to Scan</div>
 
     <table id="resultTable">
         <thead>
             <tr>
-                <th>Wallet</th>
-                <th>Transactions</th>
-                <th>NFT Count</th>
-                <th>Priority Status</th>
+                <th>Address</th>
+                <th>TX Count</th>
+                <th>NFTs</th>
+                <th>Status</th>
             </tr>
         </thead>
         <tbody id="tableBody"></tbody>
@@ -58,80 +42,64 @@
 </div>
 
 <script>
-    // Alchemy API URL (যেকোনো একটি Base Mainnet RPC URL এখানে দিন)
-    const RPC_URL = "https://base-mainnet.g.alchemy.com/v2/DkJDOSeBP-STyR6ZoyUTM"; 
+    // আপনার API Key এখানে সেট করা আছে
+    const API_URL = "https://base-mainnet.g.alchemy.com/v2/DkJDOSeBP-STyR6ZoyUTM";
 
-    async function startScan() {
+    async function runAnalysis() {
         const input = document.getElementById('wallets').value.trim();
-        const addressList = input.split('\n').map(a => a.trim()).filter(a => a.startsWith('0x'));
-        const log = document.getElementById('log');
+        const addresses = input.split('\n').map(a => a.trim()).filter(a => a.startsWith('0x'));
+        const status = document.getElementById('status');
         const tbody = document.getElementById('tableBody');
         const table = document.getElementById('resultTable');
 
-        if (addressList.length === 0) {
+        if (addresses.length === 0) {
             alert("Please paste valid wallet addresses.");
             return;
         }
 
-        log.innerText = "Connecting to Blockchain... Checking holdings.";
+        status.innerText = "Scanning Blockchain... This may take a few seconds.";
         tbody.innerHTML = "";
         table.style.display = "table";
 
-        // Initialize Provider
-        const provider = new ethers.JsonRpcProvider(RPC_URL);
-
-        for (let wallet of addressList) {
+        for (let wallet of addresses) {
             try {
-                // 1. Transaction Count
-                const txCount = await provider.getTransactionCount(wallet);
-
-                // 2. NFT Asset Count 
-                // Note: Alchemy API এর alchemy_getNFTs মেথডটি এখানে কল করা হচ্ছে
-                const nftResponse = await fetch(RPC_URL, {
+                // ১. সরাসরি Fetch কল (Batch Request)
+                const response = await fetch(API_URL, {
                     method: 'POST',
-                    body: JSON.stringify({
-                        jsonrpc: "2.0",
-                        id: 1,
-                        method: "alchemy_getNFTs",
-                        params: [wallet]
-                    })
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify([
+                        { jsonrpc: "2.0", id: 1, method: "eth_getTransactionCount", params: [wallet, "latest"] },
+                        { jsonrpc: "2.0", id: 2, method: "alchemy_getNFTs", params: [wallet] }
+                    ])
                 });
-                const nftData = await nftResponse.json();
-                const nftCount = nftData.result.ownedNfts ? nftData.result.ownedNfts.length : 0;
 
-                // Elite Logic
+                if (!response.ok) throw new Error("API Limit or Blocked");
+
+                const data = await response.json();
+                
+                const txCount = parseInt(data[0].result, 16);
+                const nftCount = data[1].result.ownedNfts ? data[1].result.ownedNfts.length : 0;
+
+                // লজিক: ১০০+ ট্রানজ্যাকশন এবং ৫০+ এনএফটি
                 const isElite = (txCount >= 100 && nftCount >= 50);
-                const status = isElite ? "GTD ACCESS" : "WL FCFS";
+                const finalStatus = isElite ? "GTD ACCESS" : "WL FCFS";
 
-                const row = `<tr class="${isElite ? 'gtd-row' : ''}">
-                    <td>${wallet.substring(0,12)}...${wallet.substring(34)}</td>
+                const row = `<tr class="${isElite ? 'gtd' : ''}">
+                    <td>${wallet.substring(0,10)}...${wallet.slice(-8)}</td>
                     <td>${txCount}</td>
-                    <td>${nftCount} NFTs</td>
-                    <td><span class="badge ${isElite ? 'badge-gtd' : 'badge-wl'}">${status}</span></td>
+                    <td>${nftCount}</td>
+                    <td>${finalStatus}</td>
                 </tr>`;
                 
                 tbody.innerHTML += row;
-                log.innerText = `Processed: ${wallet.substring(0,8)}...`;
+                status.innerText = `Analyzing: ${wallet.substring(0,8)}...`;
 
             } catch (err) {
-                console.error("Error on:", wallet, err);
+                console.error(err);
+                status.innerText = "Error: API blocked or invalid Key. Check Console (F12).";
             }
         }
-        log.innerText = "Scan Complete! Check the results below.";
-    }
-
-    function exportData() {
-        let csv = "Wallet,Transactions,NFTs,Status\n";
-        document.querySelectorAll("#tableBody tr").forEach(tr => {
-            const row = Array.from(tr.querySelectorAll("td")).map(td => td.innerText).join(",");
-            csv += row + "\n";
-        });
-        const blob = new Blob([csv], { type: 'text/csv' });
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'PikaVerse_Elite_List.csv';
-        a.click();
+        status.innerText = "Analysis Complete!";
     }
 </script>
 
