@@ -3,202 +3,137 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Pika Verse | GTD Quest</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;900&family=Syncopate:wght@700&display=swap" rel="stylesheet">
+    <title>Elite Loyalty Scanner - The Pika Verse</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.umd.min.js"></script>
     <style>
-        :root { --pika-yellow: #FFEA00; --thunder-blue: #00E5FF; }
-        body { background: #000; color: white; font-family: 'Outfit', sans-serif; overflow: hidden; }
-        .header-font { font-family: 'Syncopate', sans-serif; }
-
-        .bg-overlay {
-            position: fixed; inset: 0; z-index: -1;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.8), rgba(0,0,0,0.9)),
-                        url('https://images.alphacoders.com/132/1321727.png');
-            background-size: cover; background-position: center;
-        }
-
-        .page { display: none; height: 100vh; width: 100vw; flex-direction: column; align-items: center; justify-content: center; position: absolute; inset: 0; }
-        .active { display: flex !important; animation: fadeIn 0.8s forwards; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        /* --- PAGE 1: POKEBALL SPLIT --- */
-        .pokeball-wrapper { position: relative; width: 180px; height: 180px; cursor: pointer; }
-        .ball-part { position: absolute; width: 100%; height: 50%; left: 0; border: 6px solid #111; transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1); }
-        .top-half { top: 0; background: #ff1c1c; border-radius: 90px 90px 0 0; }
-        .bottom-half { bottom: 0; background: white; border-radius: 0 0 90px 90px; }
-        .center-btn { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 40px; height: 40px; background: white; border: 6px solid #111; border-radius: 50%; z-index: 5; }
-        .split-top { transform: translateY(-150vh) rotate(-15deg); }
-        .split-bottom { transform: translateY(150vh) rotate(15deg); }
-        .flash { position: fixed; inset: 0; background: white; opacity: 0; pointer-events: none; z-index: 100; }
-        @keyframes flash-anim { 0% { opacity: 0; } 50% { opacity: 1; } 100% { opacity: 0; } }
-
-        /* --- THUNDER UI --- */
-        .thunder-btn {
-            background: rgba(255, 234, 0, 0.1); border: 2px solid var(--pika-yellow); color: var(--pika-yellow);
-            padding: 15px 40px; border-radius: 50px; font-weight: 900; transition: 0.4s;
-            box-shadow: 0 0 15px var(--pika-yellow);
-        }
-        .thunder-btn:not(:disabled):hover { background: var(--pika-yellow); color: black; box-shadow: 0 0 40px var(--pika-yellow); }
-        
-        /* Disabled Button Style */
-        .thunder-btn:disabled { opacity: 0.3; cursor: not-allowed; border-color: #555; color: #555; box-shadow: none; }
-
-        .task-box { background: rgba(0,0,0,0.6); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; transition: 0.3s; cursor: pointer; }
-        .task-box.completed { border-color: #00FF00; background: rgba(0, 255, 0, 0.1); }
-        .task-box:hover { transform: translateX(10px); }
-
-        .submit-card { 
-            background: linear-gradient(135deg, rgba(20,20,20,0.95), rgba(0,0,0,0.9));
-            border: 2px solid #333; border-radius: 40px; box-shadow: 0 0 50px rgba(255,234,0,0.1);
-        }
-        .thunderball-submit {
-            background: radial-gradient(circle at center, #FFEA00, #FFA500);
-            border: none; color: black; font-weight: 900; border-radius: 50px;
-            box-shadow: 0 0 30px #FFEA00; transition: 0.5s;
-        }
-        .thunderball-submit:disabled { background: #333; color: #666; box-shadow: none; cursor: not-allowed; }
+        :root { --bg: #0b0e14; --card: #151921; --accent: #f0b90b; --green: #238636; --border: #30363d; --text: #e6edf3; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); padding: 40px; margin: 0; }
+        .container { max-width: 900px; margin: auto; background: var(--card); padding: 35px; border-radius: 20px; border: 1px solid var(--border); box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+        h1 { text-align: center; color: var(--accent); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 5px; }
+        p.subtitle { text-align: center; color: #8b949e; margin-bottom: 30px; }
+        textarea { width: 100%; height: 180px; background: #010409; color: #58a6ff; border: 1px solid var(--border); border-radius: 12px; padding: 15px; font-family: 'Courier New', monospace; font-size: 14px; outline: none; margin-bottom: 20px; transition: 0.3s; }
+        textarea:focus { border-color: var(--accent); }
+        .btn-group { display: flex; gap: 15px; }
+        button { flex: 1; padding: 18px; border-radius: 10px; border: none; font-weight: bold; font-size: 16px; cursor: pointer; transition: 0.3s; }
+        .btn-primary { background: var(--green); color: white; }
+        .btn-primary:hover { background: #2ea043; transform: translateY(-2px); }
+        .btn-secondary { background: #21262d; color: var(--text); border: 1px solid var(--border); }
+        .btn-secondary:hover { background: #30363d; }
+        #log { margin-top: 20px; text-align: center; color: var(--accent); font-weight: 500; font-size: 14px; }
+        table { width: 100%; margin-top: 30px; border-collapse: collapse; display: none; border-radius: 10px; overflow: hidden; }
+        th { background: #1f242c; color: var(--accent); padding: 15px; text-align: left; font-size: 12px; }
+        td { padding: 15px; border-bottom: 1px solid var(--border); font-size: 14px; background: #161b22; }
+        .gtd-row { background: rgba(35, 134, 54, 0.1) !important; border-left: 5px solid var(--green); }
+        .badge { padding: 6px 12px; border-radius: 30px; font-size: 11px; font-weight: 900; }
+        .badge-gtd { background: var(--green); color: white; }
+        .badge-wl { background: #484f58; color: #d1d5db; }
     </style>
 </head>
 <body>
 
-    <div class="bg-overlay"></div>
-    <div id="flash-layer" class="flash"></div>
+<div class="container">
+    <h1>The Pika Verse</h1>
+    <p class="subtitle">Elite GTD Selection System (100+ TX & 50+ NFTs)</p>
 
-    <section id="page1" class="page active">
-        <div class="pokeball-wrapper" onclick="startSequence()">
-            <div id="top" class="ball-part top-half"></div>
-            <div id="center-ball" class="center-btn"></div>
-            <div id="bottom" class="ball-part bottom-half"></div>
-        </div>
-        <p class="header-font text-xs mt-10 tracking-[0.5em] text-yellow-400 animate-pulse">TOUCH TO ENTER</p>
-    </section>
+    <textarea id="wallets" placeholder="Paste addresses from your Google Sheet here..."></textarea>
+    
+    <div class="btn-group">
+        <button class="btn-primary" onclick="startScan()">Analyze Wallets</button>
+        <button class="btn-secondary" onclick="exportData()">Download CSV</button>
+    </div>
 
-    <section id="page2" class="page">
-        <div class="max-w-xl text-center px-6 bg-black/40 p-10 rounded-[50px] backdrop-blur-md border border-white/5">
-            <h1 class="header-font text-5xl text-[var(--pika-yellow)] mb-6">THE PIKA VERSE GTD</h1>
-            <p class="text-gray-300 text-lg leading-relaxed mb-10">
-                You have unlocked the gateway. The Pika Verse is calling for its champions. Complete the electrical trials and secure your spot in the legend.
-            </p>
-            <button onclick="nextPage(3)" class="thunder-btn header-font">⚡ ENTER TRIALS</button>
-        </div>
-    </section>
+    <div id="log">Awaiting input...</div>
 
-    <section id="page3" class="page">
-        <h2 class="header-font text-3xl mb-8 text-white">ELECTRICAL <span class="text-yellow-400">TASKS</span></h2>
-        <div class="w-full max-w-xl space-y-4 px-6">
-            <div id="t1" onclick="completeTask(1, 'https://x.com/thepikachuverse')" class="task-box p-5 flex items-center justify-between">
-                <span class="font-bold">Follow @thepikachuverse</span>
-                <span id="check1" class="text-2xl">⚡</span>
-            </div>
-            <div id="t2" onclick="completeTask(2, 'https://x.com/i/status/2031054504993632648')" class="task-box p-5 flex items-center justify-between">
-                <span class="font-bold">Like the Quest Tweet</span>
-                <span id="check2" class="text-2xl">⚡</span>
-            </div>
-            <div id="t3" onclick="completeTask(3, 'https://x.com/i/status/2031054504993632648')" class="task-box p-5 flex items-center justify-between">
-                <span class="font-bold">Repost the Quest Tweet</span>
-                <span id="check3" class="text-2xl">⚡</span>
-            </div>
-            <div id="t4" onclick="completeTask(4, 'https://x.com/i/status/2031054504993632648')" class="task-box p-5 flex items-center justify-between">
-                <span class="font-bold">Comment on the Tweet</span>
-                <span id="check4" class="text-2xl">⚡</span>
-            </div>
-            <div id="t5" onclick="completeTask(5, 'https://x.com/thepikachuverse')" class="task-box p-5 flex items-center justify-between">
-                <span class="font-bold">Share Meme & Tag Verse</span>
-                <span id="check5" class="text-2xl">⚡</span>
-            </div>
-            
-            <p id="task-msg" class="text-[10px] text-center text-red-500 font-bold uppercase tracking-widest mt-2">Complete all 5 tasks to proceed</p>
-            
-            <button id="next-to-final" onclick="nextPage(4)" disabled class="w-full py-4 mt-4 bg-white text-black font-black rounded-full uppercase italic disabled:opacity-20">Verify Submission</button>
-        </div>
-    </section>
+    <table id="resultTable">
+        <thead>
+            <tr>
+                <th>Wallet</th>
+                <th>Transactions</th>
+                <th>NFT Count</th>
+                <th>Priority Status</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+    </table>
+</div>
 
-    <section id="page4" class="page">
-        <div class="w-full max-w-lg submit-card p-10 mx-6 relative overflow-hidden">
-            <img src="https://assets.pokemon.com/assets/cms2/img/pokedex/full/025.png" class="absolute -bottom-10 -right-10 w-40 opacity-20 pointer-events-none">
-            <h2 class="header-font text-2xl mb-8 text-center text-yellow-400">QUEST VERIFICATION</h2>
-            
-            <form id="pikaFinalForm" class="space-y-5">
-                <input type="text" name="username" id="form-user" placeholder="𝕏 Handle (@username)" class="w-full bg-white/5 border border-white/20 p-4 rounded-2xl outline-none focus:border-yellow-400" required>
-                <div class="flex items-center gap-4 bg-white/5 p-4 rounded-2xl border border-white/10">
-                    <input type="checkbox" id="form-check" required class="w-6 h-6 accent-yellow-400">
-                    <label class="text-xs text-gray-400">I confirm that I completed all tasks.</label>
-                </div>
-                <input type="text" name="meme_link" id="form-meme" placeholder="Meme Post Link" class="w-full bg-white/5 border border-white/20 p-4 rounded-2xl outline-none focus:border-yellow-400" required>
-                <input type="text" name="wallet" id="form-wallet" placeholder="EVM Wallet Address" class="w-full bg-white/5 border border-white/20 p-4 rounded-2xl outline-none focus:border-yellow-400 font-mono text-xs" required>
+<script>
+    // Alchemy API URL (যেকোনো একটি Base Mainnet RPC URL এখানে দিন)
+    const RPC_URL = "https://base-mainnet.g.alchemy.com/v2/demo"; 
 
-                <button type="submit" id="submit-btn" class="w-full thunderball-submit py-5 header-font text-sm uppercase">
-                    ⚡ CAST THUNDERBOLT
-                </button>
-            </form>
+    async function startScan() {
+        const input = document.getElementById('wallets').value.trim();
+        const addressList = input.split('\n').map(a => a.trim()).filter(a => a.startsWith('0x'));
+        const log = document.getElementById('log');
+        const tbody = document.getElementById('tableBody');
+        const table = document.getElementById('resultTable');
 
-            <div id="referral-zone" class="mt-10 hidden text-center">
-                <div class="p-4 bg-yellow-400/10 border border-dashed border-yellow-400 rounded-3xl">
-                    <p id="final-link" class="text-xs font-mono text-gray-300 mb-3"></p>
-                    <button onclick="copyRef()" class="bg-yellow-400 text-black px-6 py-2 rounded-full font-bold text-xs">COPY LINK</button>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <script>
-        let tasksCompleted = [false, false, false, false, false];
-
-        function completeTask(num, url) {
-            window.open(url, '_blank');
-            tasksCompleted[num-1] = true;
-            document.getElementById(`t${num}`).classList.add('completed');
-            document.getElementById(`check${num}`).innerText = '✅';
-            checkAllTasks();
+        if (addressList.length === 0) {
+            alert("Please paste valid wallet addresses.");
+            return;
         }
 
-        function checkAllTasks() {
-            if (tasksCompleted.every(t => t === true)) {
-                document.getElementById('next-to-final').disabled = false;
-                document.getElementById('task-msg').innerText = "ALL TRIALS COMPLETE! PROCEED.";
-                document.getElementById('task-msg').classList.replace('text-red-500', 'text-green-500');
+        log.innerText = "Connecting to Blockchain... Checking holdings.";
+        tbody.innerHTML = "";
+        table.style.display = "table";
+
+        // Initialize Provider
+        const provider = new ethers.JsonRpcProvider(RPC_URL);
+
+        for (let wallet of addressList) {
+            try {
+                // 1. Transaction Count
+                const txCount = await provider.getTransactionCount(wallet);
+
+                // 2. NFT Asset Count 
+                // Note: Alchemy API এর alchemy_getNFTs মেথডটি এখানে কল করা হচ্ছে
+                const nftResponse = await fetch(RPC_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        jsonrpc: "2.0",
+                        id: 1,
+                        method: "alchemy_getNFTs",
+                        params: [wallet]
+                    })
+                });
+                const nftData = await nftResponse.json();
+                const nftCount = nftData.result.ownedNfts ? nftData.result.ownedNfts.length : 0;
+
+                // Elite Logic
+                const isElite = (txCount >= 100 && nftCount >= 50);
+                const status = isElite ? "GTD ACCESS" : "WL FCFS";
+
+                const row = `<tr class="${isElite ? 'gtd-row' : ''}">
+                    <td>${wallet.substring(0,12)}...${wallet.substring(34)}</td>
+                    <td>${txCount}</td>
+                    <td>${nftCount} NFTs</td>
+                    <td><span class="badge ${isElite ? 'badge-gtd' : 'badge-wl'}">${status}</span></td>
+                </tr>`;
+                
+                tbody.innerHTML += row;
+                log.innerText = `Processed: ${wallet.substring(0,8)}...`;
+
+            } catch (err) {
+                console.error("Error on:", wallet, err);
             }
         }
+        log.innerText = "Scan Complete! Check the results below.";
+    }
 
-        function startSequence() {
-            document.getElementById('top').classList.add('split-top');
-            document.getElementById('bottom').classList.add('split-bottom');
-            document.getElementById('center-ball').style.opacity = '0';
-            document.getElementById('flash-layer').style.animation = 'flash-anim 1s forwards';
-            setTimeout(() => { nextPage(2); }, 800);
-        }
-
-        function nextPage(n) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById('page' + n).classList.add('active');
-        }
-
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbw7ieLRoWQl4dd59ioqKZeqlPYRjbFSI97IaNO1eL9E0_5qBshj2rWdpSPLsaqSEP5Yxw/exec'; 
-        const form = document.getElementById('pikaFinalForm');
-
-        form.addEventListener('submit', e => {
-            e.preventDefault();
-            const btn = document.getElementById('submit-btn');
-            btn.innerText = "TRANSMITTING...";
-            btn.disabled = true;
-
-            const user = document.getElementById('form-user').value.replace('@', '');
-            const refLink = `https://thepikaverse.art/?ref=${user}`;
-
-            fetch(scriptURL, { method: 'POST', body: new FormData(form)})
-                .finally(() => {
-                    document.getElementById('final-link').innerText = refLink;
-                    document.getElementById('referral-zone').classList.remove('hidden');
-                    btn.innerText = "SENT TO VERSE";
-                });
+    function exportData() {
+        let csv = "Wallet,Transactions,NFTs,Status\n";
+        document.querySelectorAll("#tableBody tr").forEach(tr => {
+            const row = Array.from(tr.querySelectorAll("td")).map(td => td.innerText).join(",");
+            csv += row + "\n";
         });
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'PikaVerse_Elite_List.csv';
+        a.click();
+    }
+</script>
 
-        function copyRef() {
-            navigator.clipboard.writeText(document.getElementById('final-link').innerText);
-            alert("Referral Link Copied!");
-        }
-    </script>
 </body>
 </html>
->
