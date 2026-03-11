@@ -86,8 +86,8 @@
                 const txCount = parseInt(data.result, 16);
 
                 // Logic: 
-                // We assume wallets with > 25 transactions are "Real Users/Holders" (GTD)
-                // Wallets with < 25 transactions are "Potential Flippers/New Wallets" (WL)
+                // We assume wallets with > 300 transactions are "Real Users/Holders" (GTD)
+                // Wallets with < 300 transactions are "Potential Flippers/New Wallets" (WL)
                 let isDiamondHand = txCount >= 300; 
                 let status = isDiamondHand ? "GTD ACCESS" : "WL FCFS";
                 let score = txCount > 1000 ? "Elite Holder" : txCount > 300 ? "Trusted Holder" : "Low Activity";
