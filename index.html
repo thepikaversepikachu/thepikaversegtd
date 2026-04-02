@@ -3,127 +3,143 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Pika Verse - Diamond Hand Analyzer</title>
+    <title>Tiny Dino Pixel Genesis</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
     <style>
-        :root { --bg: #0d1117; --card: #161b22; --border: #30363d; --accent: #f0b90b; --success: #238636; --text: #c9d1d9; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); color: var(--text); padding: 40px; }
-        .container { max-width: 900px; margin: auto; background: var(--card); padding: 30px; border-radius: 12px; border: 1px solid var(--border); }
-        h2 { color: var(--accent); text-align: center; margin-bottom: 10px; }
-        p.description { text-align: center; color: #8b949e; margin-bottom: 25px; }
-        textarea { width: 100%; height: 150px; background: var(--bg); color: #58a6ff; border: 1px solid var(--border); border-radius: 8px; padding: 15px; box-sizing: border-box; font-family: monospace; }
-        .btn-group { display: flex; gap: 10px; margin: 20px 0; }
-        button { flex: 1; background: var(--success); color: white; border: none; padding: 15px; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.2s; }
-        button:hover { opacity: 0.9; }
-        button.download-btn { background: #30363d; }
-        #status { margin-top: 10px; color: var(--accent); font-weight: bold; text-align: center; }
-        .results-table { width: 100%; margin-top: 25px; border-collapse: collapse; }
-        .results-table th, .results-table td { border: 1px solid var(--border); padding: 12px; text-align: left; font-size: 14px; }
-        .results-table th { background: #21262d; color: var(--accent); }
-        .gtd { border-left: 4px solid var(--success); background: rgba(35, 134, 54, 0.1); }
-        .badge { padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; }
-        .badge-gtd { background: var(--success); color: white; }
-        .badge-wl { background: #484f58; color: white; }
+        :root { --neon-green: #00ff66; --bright-yellow: #ccff00; --dark-void: #050505; }
+        body { margin: 0; background-color: var(--bright-yellow); font-family: 'VT323', monospace; color: var(--dark-void); overflow-x: hidden; }
+        .main-frame { max-width: 800px; margin: 40px auto; border: 8px solid var(--dark-void); background: #fff; position: relative; box-shadow: 20px 20px 0px var(--dark-void); }
+        .header-box { background: var(--dark-void); color: var(--bright-yellow); padding: 20px; text-align: center; }
+        .dino-display { padding: 40px; background: #fff; border-bottom: 6px dashed var(--dark-void); text-align: center; }
+        .main-img { width: 250px; height: 250px; image-rendering: pixelated; border: 6px solid var(--dark-void); padding: 10px; background: var(--bright-yellow); transform: rotate(-2deg); max-width: 100%; }
+        .interface-grid { display: grid; grid-template-columns: 1fr 1fr; padding: 20px; gap: 20px; background: #f0f0f0; }
+        .pixel-card { border: 4px solid var(--dark-void); padding: 20px; background: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .action-btn { width: 100%; padding: 20px; font-family: 'Press Start 2P', cursive; font-size: 12px; cursor: pointer; border: 4px solid var(--dark-void); box-shadow: 4px 4px 0px var(--dark-void); text-decoration: none; text-align: center; color: var(--dark-void); transition: 0.1s; }
+        .btn-apply { background: var(--neon-green); }
+        .btn-mint { background: var(--bright-yellow); }
+        .action-btn:active { transform: translate(4px, 4px); box-shadow: 0px 0px 0px; }
+        .timer-red { margin-top: 10px; background: var(--dark-void); color: #ff3e3e; padding: 5px 10px; font-size: 14px; letter-spacing: 2px; }
+        .pixel-gallery { display: flex; overflow-x: auto; gap: 15px; padding: 20px; background: var(--dark-void); }
+        .pixel-gallery img { width: 120px; height: 120px; border: 3px solid var(--bright-yellow); flex-shrink: 0; image-rendering: pixelated; }
+
+        /* রোডম্যাপ ফিক্স - আপনার স্ক্রিনশট অনুযায়ী */
+        .roadmap-section { padding: 40px; text-align: left; background: #fff; }
+        .roadmap-entry { border-left: 4px solid var(--dark-void); padding-left: 20px; margin-bottom: 30px; position: relative; }
+        .roadmap-entry::before { content: ""; position: absolute; left: -12px; top: 0; width: 20px; height: 20px; background: var(--neon-green); border: 4px solid var(--dark-void); }
+        .roadmap-entry h4 { margin: 0; color: var(--dark-void); font-size: 1.2rem; }
+        .roadmap-entry p { margin: 5px 0 0; color: #444; font-size: 1.2rem; line-height: 1.2; }
+
+        .modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #fff; border: 6px solid var(--dark-void); padding: 30px; width: 90%; max-width: 450px; z-index: 1001; }
+        .task-row { background: #f9f9f9; border: 2px solid var(--dark-void); padding: 15px; margin-bottom: 10px; cursor: pointer; font-weight: bold; display: flex; justify-content: space-between; font-size: 14px; }
+        .task-row.done { background: var(--neon-green); text-decoration: line-through; }
+        input { width: 100%; padding: 15px; margin: 10px 0; border: 3px solid var(--dark-void); font-family: 'VT323'; font-size: 1.2rem; box-sizing: border-box; }
+        #overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; }
+
+        @media (max-width: 600px) { .interface-grid { grid-template-columns: 1fr; } .main-frame { margin: 10px; } }
     </style>
 </head>
 <body>
-
-<div class="container">
-    <h2>THE PIKA VERSE</h2>
-    <p class="description">Filtering GTD Members based on Wallet Activity and Holding Trust (Diamond Hands).</p>
-
-    <textarea id="addressInput" placeholder="Paste wallet addresses from Google Sheet (One per line)..."></textarea>
-    
-    <div class="btn-group">
-        <button onclick="analyzeWallets()">Analyze Holding Trust</button>
-        <button class="download-btn" onclick="downloadCSV()">Download Result (CSV)</button>
+<div id="overlay"></div>
+<div class="main-frame">
+    <div class="header-box"><h1 class="pixel-font" style="margin:0; font-size: 1.2rem;">TINY DINO PIXEL</h1></div>
+    <div class="dino-display">
+        <img src="https://i.ibb.co.com/vvgYfCvP/Image20260402.png" class="main-img">
+        <h2 class="pixel-font" style="font-size: 12px; margin-top: 20px;">GENESIS COLLECTION</h2>
+        <p style="font-size: 1.4rem;">1,111 Primitive Pixel Dinos ready to evolve on Base Chain.</p>
     </div>
+    <div class="interface-grid">
+        <div class="pixel-card">
+            <button class="action-btn btn-apply" onclick="openTasks()">GTD & WL APPLY</button>
+            <div class="timer-red pixel-font" id="countdown">24:00:00</div>
+        </div>
+        <div class="pixel-card">
+            <a href="https://opensea.io/collection/dinopixelchain/overview" target="_blank" class="action-btn btn-mint">MINT PAGE</a>
+            <p style="font-weight: bold; margin-top: 10px;">Network: BASE</p>
+        </div>
+    </div>
+    <div class="pixel-gallery">
+        <img src="https://i.ibb.co.com/7t08k08y/file-00000000c47071fa9bddd94082e4c6a8.png">
+        <img src="https://i.ibb.co.com/kVQ35LhD/file-00000000310c71fa826a41523aa058b5.png">
+        <img src="https://i.ibb.co.com/fdSGWrSd/file-00000000d97071faa1b99f9bfbd6b7c4.png">
+        <img src="https://i.ibb.co.com/hRBTDyfZ/file-0000000093e471fa8fa89a055c40998c.png">
+    </div>
+    <div class="roadmap-section">
+        <h3 class="pixel-font" style="border-bottom: 4px solid var(--neon-green); display: inline-block; font-size: 14px; margin-bottom: 25px;">ROADMAP 1.0</h3>
+        <div class="roadmap-entry">
+            <h4 class="pixel-font" style="font-size: 10px;">STAGE 1: THE HATCHING</h4>
+            <p>Launch of 1,111 Primitive Dinos on Base Network. Establishing our prehistoric foundation.</p>
+        </div>
+        <div class="roadmap-entry">
+            <h4 class="pixel-font" style="font-size: 10px;">STAGE 2: EVOLUTION</h4>
+            <p>Staking for $PIXEL tokens and exclusive airdrops for our early dino holders.</p>
+        </div>
+        <div class="roadmap-entry">
+            <h4 class="pixel-font" style="font-size: 10px;">STAGE 3: DINO-VERSE GAME</h4>
+            <p>A 2D pixel adventure where your NFT becomes your unique playable character.</p>
+        </div>
+    </div>
+</div>
 
-    <div id="status"></div>
-
-    <table class="results-table" id="resultsTable" style="display: none;">
-        <thead>
-            <tr>
-                <th>Wallet Address</th>
-                <th>Transaction Count</th>
-                <th>Activity Score</th>
-                <th>Final Status</th>
-            </tr>
-        </thead>
-        <tbody id="resultsBody"></tbody>
-    </table>
+<div id="taskModal" class="modal">
+    <div id="step1">
+        <h3 class="pixel-font" style="font-size: 11px;">MANDATORY MISSIONS</h3>
+        <div class="task-row" onclick="completeTask(this, 'https://x.com/dinopixelchain')">1. FOLLOW @DINOPIXELCHAIN <span>→</span></div>
+        <div class="task-row" onclick="completeTask(this, 'https://x.com/i/status/2039588474052121013')">2. LIKE PINNED POST <span>→</span></div>
+        <div class="task-row" onclick="completeTask(this, 'https://x.com/i/status/2039588474052121013')">3. RETWEET POST <span>→</span></div>
+        <div class="task-row" onclick="completeTask(this, 'https://x.com/i/status/2039588474052121013')">4. COMMENT POST <span>→</span></div>
+        <button class="action-btn btn-apply" style="width:100%;" onclick="toSubmission()">VERIFY & NEXT</button>
+    </div>
+    <div id="step2" style="display:none;">
+        <h3 class="pixel-font" style="font-size: 11px;">IDENTITY SUBMISSION</h3>
+        <form id="googleForm">
+            <input type="text" name="x_user" placeholder="X Username (@...)" required>
+            <input type="text" name="comment_link" placeholder="Comment Link" required>
+            <input type="text" name="wallet" placeholder="EVM Wallet Address (0x...)" required>
+            <button type="submit" class="action-btn btn-mint" style="width:100%; margin-top:10px;">SUBMIT APPLICATION</button>
+        </form>
+    </div>
+    <div id="step3" style="display:none; text-align: center; padding: 10px;">
+        <h2 class="pixel-font" style="color: var(--neon-green); font-size: 16px; margin-bottom: 15px;">CONGRATULATIONS!</h2>
+        <p style="font-size: 1.3rem; line-height: 1.4; color: #333;">Your application for the **Tiny Dino Whitelist** has been successfully submitted! <br><br> We are processing your prehistoric data into our Jurassic Database.</p>
+        <button class="action-btn" style="margin-top:20px; background: var(--dark-void); color: #fff;" onclick="location.reload()">BACK TO HOME</button>
+    </div>
 </div>
 
 <script>
-    // Using Base Network RPC
-    const RPC_URL = "https://mainnet.base.org"; 
-
-    async function analyzeWallets() {
-        const input = document.getElementById('addressInput').value.trim();
-        const addresses = input.split('\n').map(a => a.trim()).filter(a => a.startsWith('0x'));
-        const statusDiv = document.getElementById('status');
-        const tbody = document.getElementById('resultsBody');
-        const table = document.getElementById('resultsTable');
-
-        if (addresses.length === 0) {
-            alert("Please provide valid wallet addresses.");
-            return;
-        }
-
-        statusDiv.innerText = "Analyzing blockchain activity... Please wait.";
-        tbody.innerHTML = "";
-        table.style.display = "table";
-
-        for (let wallet of addresses) {
-            try {
-                // Fetch Transaction Count (Nonce)
-                // A higher transaction count indicates a long-term user/holder.
-                const response = await fetch(RPC_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "eth_getTransactionCount", params: [wallet, "latest"] })
-                });
-                const data = await response.json();
-                const txCount = parseInt(data.result, 16);
-
-                // Logic: 
-                // We assume wallets with > 300 transactions are "Real Users/Holders" (GTD)
-                // Wallets with < 300 transactions are "Potential Flippers/New Wallets" (WL)
-                let isDiamondHand = txCount >= 300; 
-                let status = isDiamondHand ? "GTD ACCESS" : "WL FCFS";
-                let score = txCount > 1000 ? "Elite Holder" : txCount > 300 ? "Trusted Holder" : "Low Activity";
-
-                const row = `
-                    <tr class="${isDiamondHand ? 'gtd' : ''}">
-                        <td>${wallet}</td>
-                        <td>${txCount}</td>
-                        <td>${score}</td>
-                        <td><span class="badge ${isDiamondHand ? 'badge-gtd' : 'badge-wl'}">${status}</span></td>
-                    </tr>
-                `;
-                tbody.innerHTML += row;
-
-            } catch (err) {
-                console.error("Error fetching data for:", wallet);
-            }
-        }
-        statusDiv.innerText = "Analysis Complete!";
+    const COUNTDOWN_TIME = 24 * 60 * 60 * 1000;
+    let startTime = localStorage.getItem('dinoStartTimeV2');
+    if (!startTime) { startTime = new Date().getTime(); localStorage.setItem('dinoStartTimeV2', startTime); }
+    function updateTimer() {
+        const now = new Date().getTime();
+        const distance = (parseInt(startTime) + COUNTDOWN_TIME) - now;
+        const el = document.getElementById('countdown');
+        if (distance < 0) { el.innerText = "EXPIRED"; return; }
+        const h = Math.floor((distance / (1000 * 60 * 60)));
+        const m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const s = Math.floor((distance % (1000 * 60)) / 1000);
+        el.innerText = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
     }
+    setInterval(updateTimer, 1000);
 
-    function downloadCSV() {
-        let csv = "Wallet Address,Tx Count,Score,Status\n";
-        const rows = document.querySelectorAll("#resultsBody tr");
-        rows.forEach(row => {
-            const cols = row.querySelectorAll("td");
-            csv += Array.from(cols).map(c => c.innerText).join(",") + "\n";
-        });
-        const blob = new Blob([csv], { type: 'text/csv' });
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'PikaVerse_Filtered_List.csv';
-        a.click();
-    }
+    let doneCount = 0;
+    function openTasks() { document.getElementById('taskModal').style.display='block'; document.getElementById('overlay').style.display='block'; }
+    function completeTask(el, url) { window.open(url, '_blank'); if(!el.classList.contains('done')) { el.classList.add('done'); doneCount++; } }
+    function toSubmission() { if(doneCount >= 4) { document.getElementById('step1').style.display='none'; document.getElementById('step2').style.display='block'; } else alert("Complete all missions first!"); }
+
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbwyHusBHdzPwQSMwFqSVm7u139L0XZyKol-TQ5U5d-xbKHfz_oE-dPR7f5E6bJVJBImcg/exec'; 
+    const form = document.getElementById('googleForm');
+
+    form.addEventListener('submit', e => {
+        e.preventDefault();
+        // তৎক্ষণাৎ অভিনন্দন দেখানো (Instant Success)
+        document.getElementById('step2').style.display='none';
+        document.getElementById('step3').style.display='block';
+        
+        // ব্যাকগ্রাউন্ডে ডেটা পাঠানো (Fast Submission)
+        fetch(scriptURL, { method: 'POST', body: new FormData(form), mode: 'no-cors'})
+            .then(res => console.log('Data synced to sheets'))
+            .catch(err => console.error('Sheet Sync Error:', err));
+    });
 </script>
-
 </body>
 </html>
